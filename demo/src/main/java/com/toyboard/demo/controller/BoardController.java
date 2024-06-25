@@ -16,25 +16,35 @@ public class BoardController {
     public String getBoardList(Model model) {
         model.addAttribute("boardList", boardService.getBoardList());
         return "/boardList";
+    }
 
+    @GetMapping("/updateForm")
+    public String updateForm() {
+        return "/updateForm";
+    }
+
+    @GetMapping("/{id}")
+    public String getBoard(Model model, @PathVariable Long id) {
+        model.addAttribute("board", boardService.getBoard(id));
+        return "/boardDetail";
     }
 
     @PostMapping
     public String createBoard(Board board) {
         boardService.createBoard(board);
-        return "redirect:/boardList";
+        return "redirect:/";
     }
 
-    @PutMapping
-    public String updateBoard(Board board) {
-        boardService.updateBoard(board);
-        return "redirect:/boardList";
+    @PutMapping("/{id}")
+    public String updateBoard(@PathVariable Long id) {
+        boardService.updateBoard(id);
+        return "redirect:/";
     }
 
-    @DeleteMapping
-    public String deleteBoard(Board board) {
-        boardService.deleteBoard(board);
-        return "redirect:/boardList";
+    @DeleteMapping("/{id}")
+    public String deleteBoard(@PathVariable Long id) {
+        boardService.deleteBoard(id);
+        return "redirect:/";
     }
 
 
