@@ -1,6 +1,5 @@
 package com.toyboard.demo.service;
 
-import com.toyboard.demo.dto.BoardUserDto;
 import com.toyboard.demo.entity.Board;
 import com.toyboard.demo.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,32 +22,32 @@ public class BoardService {
 
     /**
      * 게시글 수정
-     * @param board
+     * @param id
      */
-    public void updateBoard(Board board) {
-        Board b = boardRepository.findById(board.getId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+    public void updateBoard(Long id) {
+        Board b = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
         boardRepository.save(b);
     }
 
     /**
      * 게시글 삭제
-     * @param board
+     * @param id
      */
-    public void deleteBoard(Board board) {
-        boardRepository.delete(board);
+    public void deleteBoard(Long id) {
+        boardRepository.deleteById(id);
     }
 
     /**
      * 게시글 리스트 조회
      * @return List<Board>
      */
-    public List<BoardUserDto> getBoardList() {
-        return boardRepository.findAllByUser();
+    public List<Board> getBoardList() {
+        return boardRepository.findAll();
 
     }
 
-    public Board getBoard(Board board) {
-        return boardRepository.findById(board.getId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+    public Board getBoard(Long id) {
+        return boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
     }
 
 
