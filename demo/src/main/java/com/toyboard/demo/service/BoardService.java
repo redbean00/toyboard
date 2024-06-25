@@ -2,10 +2,12 @@ package com.toyboard.demo.service;
 
 import com.toyboard.demo.dto.BoardUserDto;
 import com.toyboard.demo.entity.Board;
+import com.toyboard.demo.entity.User;
 import com.toyboard.demo.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,10 +45,25 @@ public class BoardService {
      * @return List<Board>
      */
     public List<BoardUserDto> getBoardList() {
-        return boardRepository.findAllByUser();
+        List<BoardUserDto> boardList = new ArrayList<>();
+        List<Board> list = boardRepository.findAll();
+        for(int i = 0; i < list.size(); i++) {
+            boardList.add(BoardUserDto.builder()
+                            .id(list.get(i).getId())
+                            .username(list.get(i).getUser().getUsername())
+                            .title(list.get(i).getTitle())
+                    .build());
+        }
+        return boardList;
 
     }
 
+
+    /**
+     * 게시글 상세 보기
+     * @param board
+     * @return board
+     */
     public Board getBoard(Board board) {
         return boardRepository.findById(board.getId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
     }

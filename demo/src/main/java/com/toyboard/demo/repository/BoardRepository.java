@@ -13,11 +13,4 @@ import java.util.List;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-
-    @Query( value = "SELECT b.id, u.username, b.title " +
-            "FROM board_tb as b LEFT OUTER JOIN user_tb as u " +
-            "ON b.user_id = u.id", nativeQuery = true)
-    List<BoardUserDto> findAllByUser();
-
-
 }
