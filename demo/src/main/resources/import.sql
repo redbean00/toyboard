@@ -1,3 +1,6 @@
-insert into board_tb(title, content) values('board1', 'this is board1');
-insert into board_tb(title, content) values('board2', 'this is board2');
-insert into board_tb(title, content) values('board3', 'this is board3');
+--insert into board_tb(title, content) values('게시글1', '게시글 1 입니다.');
+--insert into board_tb(title, content, created_at, updated_at) values('게시글2', '게시글 2 입니다.', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+--insert into board_tb(title, content, created_at, updated_at) values('게시글3', '게시글 3 입니다.', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+--insert into board_tb(title, content, created_at, updated_at) values('게시글4', '게시글 4 입니다.', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+--insert into board_tb(title, content, created_at, updated_at) values('게시글5', '게시글 5 입니다.', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+--insert into board_tb(title, content, created_at, updated_at) values('게시글6', '게시글 6 입니다.', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());

@@ -1,5 +1,6 @@
 package com.toyboard.demo.service;
 
+import com.toyboard.demo.dto.BoardDto;
 import com.toyboard.demo.entity.Board;
 import com.toyboard.demo.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,18 +15,30 @@ public class BoardService {
 
     /**
      * 게시글 등록
-     * @param board
+     * @param boardDto
      */
-    public void createBoard(Board board) {
+    public void createBoard(BoardDto boardDto) {
+        Board board = Board.builder()
+                .title(boardDto.getTitle())
+                .content(boardDto.getContent())
+                .build();
         boardRepository.save(board);
     }
 
+
     /**
      * 게시글 수정
-     * @param id
+     * @param board
      */
-    public void updateBoard(Long id) {
-        Board b = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+    public void updateBoard(Board board) {
+        Board b = null;
+        if(boardRepository.findById(board.getId()).isPresent()) {
+            b = Board.builder()
+                    .id(board.getId())
+                    .title(board.getTitle())
+                    .content(board.getContent())
+                    .build();
+        }
         boardRepository.save(b);
     }
 
