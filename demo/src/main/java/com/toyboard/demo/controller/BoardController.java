@@ -1,6 +1,8 @@
 package com.toyboard.demo.controller;
 
 import com.toyboard.demo.dto.BoardDto;
+import com.toyboard.demo.dto.BoardFileUploadDTO;
+import com.toyboard.demo.dto.BoardWriteRequestDTO;
 import com.toyboard.demo.entity.Board;
 import com.toyboard.demo.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 public class BoardController {
     private final BoardService boardService;
 
-    @GetMapping("/postForm")
-    public String postForm(Model model) {
-        model.addAttribute("boardDto", new BoardDto());
-        return "/postForm";
+    @GetMapping("/writeForm")
+    public String postForm() {
+//        model.addAttribute("boardDto", new BoardDto());
+        return "/writeForm";
     }
 
     @GetMapping("/updateForm/{id}")
@@ -38,9 +40,9 @@ public class BoardController {
         return "/boardDetail";
     }
 
-    @PostMapping("/post")
-    public String createBoard(@ModelAttribute BoardDto boardDto) {
-        boardService.createBoard(boardDto);
+    @PostMapping("/write")
+    public String writeBoard(BoardWriteRequestDTO boardWriteRequestDTO, @ModelAttribute BoardFileUploadDTO boardFileUploadDTO) {
+        boardService.saveBoard(boardWriteRequestDTO, boardFileUploadDTO);
         return "redirect:/board/list";
     }
 
