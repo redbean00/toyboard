@@ -13,36 +13,21 @@
 </head>
 
 <body>
-<!--    <h5>게시글 상세보기</h5>-->
-<!--    <div class="mb-3">-->
-<!--        <label for="title" class="form-label">제목</label>-->
-<!--        <input type="text" class="form-control" id="title" value="제목" th:value="${board.title}" readonly>-->
-<!--    </div>-->
-<!--    <div class="mb-3">-->
-<!--        <label for="content" class="form-label">내용</label>-->
-<!--        <input type="text" class="form-control" id="content" value="내용" th:value="${board.content}" readonly>-->
-<!--    </div>-->
-<!--    <div>-->
-<!--        <a class="btn btn-outline-dark" th:href="@{|/board/updateForm/${board.id}|}">수정</a>-->
-<!--        <a class="btn btn-outline-secondary" th:href="@{|/board/delete/${board.id}|}">삭제</a>-->
-<!--    </div>-->
-
-    <h1 class="mt-4">Board</h1>
     <div class="card mb-4">
         <div class="card-body">
             <form>
                 <div class="mb-3">
-                    <label for="title" class="form-label">title</label>
-                    <input type="text" class="form-control" id="title" name="title" th:value="${dto.title}" disabled>
+                    <label for="title" class="form-label">제목</label>
+                    <input type="text" class="form-control" id="title" name="title" th:value="${board.title}" disabled>
                 </div>
                 <div class="mb-3">
-                    <label for="content" class="form-label">content</label>
-                    <textarea class="form-control" id="content" name="content" disabled>[[${dto.content}]]</textarea>
+                    <label for="content" class="form-label">내용</label>
+                    <textarea class="form-control" id="content" name="content" disabled th:value="${board.content}"></textarea>
                 </div>
-                <div class="mb-3" th:if="${dto.imageUrls != null}">
-                    <label class="form-label">Images</label>
+                <div class="mb-3" th:if="${board.imageUrls != null}">
+                    <label class="form-label">파일</label>
                     <div>
-                        <th:block th:each="imageUrl : ${dto.imageUrls}">
+                        <th:block th:each="imageUrl : ${board.imageUrls}">
                             <img th:src="${imageUrl}" alt="Image" width="200px" height="200px">
                         </th:block>
                     </div>
@@ -50,13 +35,10 @@
                 <div class="mb-3">
                     <label for="createdAt" class="form-label">작성일</label> <input
                         type="text" class="form-control" id="createdAt" name="createdAt"
-                        th:value="${#temporals.format(dto.createdAt, 'yyyy-MM-dd HH:mm')}" disabled>
+                        th:value="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}" disabled>
                 </div>
-                <a href="/" class="btn btn-outline-secondary">list</a>
-                <th:block th:if="${dto.getEmail() == #authentication.principal.username}">
-                    <a th:href="@{/board/{id}/update(id=${id})}" class="btn btn-outline-warning">modify</a>
-                    <a th:href="@{/board/{id}/remove(id=${id})}" class="btn btn-outline-danger" onclick="return confirm('삭제하시겠습니까?')">remove</a>
-                </th:block>
+                <a th:href="@{/board/{id}/update(id=${id})}" class="btn btn-outline-warning">modify</a>
+                <a th:href="@{/board/{id}/remove(id=${id})}" class="btn btn-outline-danger" onclick="return confirm('삭제하시겠습니까?')">remove</a>
             </form>
 
 
