@@ -1,6 +1,7 @@
 package com.toyboard.demo.service;
 
 import com.toyboard.demo.dto.BoardFileUploadDTO;
+import com.toyboard.demo.dto.BoardResponseDTO;
 import com.toyboard.demo.dto.BoardWriteRequestDTO;
 import com.toyboard.demo.entity.Board;
 import com.toyboard.demo.entity.BoardFile;
@@ -23,7 +24,8 @@ public class BoardService {
 
     /**
      * 게시글 등록
-     * @param boardDto
+     * @param boardWriteRequestDTO
+     * @param boardFileUploadDTO
      */
     public void saveBoard(BoardWriteRequestDTO boardWriteRequestDTO, BoardFileUploadDTO boardFileUploadDTO)  {
         Board result = Board.builder()
@@ -41,7 +43,7 @@ public class BoardService {
                 try{
                     file.transferTo(destinationFile);
                 }catch (IOException e){
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
 
                 BoardFile boardFile = BoardFile.builder()
@@ -93,8 +95,12 @@ public class BoardService {
      * @param id
      * @return
      */
-    public Board getBoard(Long id) {
-        return boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+    public BoardResponseDTO getBoard(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        return BoardResponseDTO.builder()
+                .board(board)
+                .build();
     }
 
 }

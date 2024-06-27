@@ -2,6 +2,7 @@ package com.toyboard.demo.controller;
 
 import com.toyboard.demo.dto.BoardDto;
 import com.toyboard.demo.dto.BoardFileUploadDTO;
+import com.toyboard.demo.dto.BoardResponseDTO;
 import com.toyboard.demo.dto.BoardWriteRequestDTO;
 import com.toyboard.demo.entity.Board;
 import com.toyboard.demo.service.BoardService;
@@ -17,9 +18,22 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/writeForm")
-    public String postForm() {
-//        model.addAttribute("boardDto", new BoardDto());
+    public String writeForm() {
         return "/writeForm";
+    }
+
+    @PostMapping("/write")
+    public String writeBoard(BoardWriteRequestDTO boardWriteRequestDTO, @ModelAttribute BoardFileUploadDTO boardFileUploadDTO) {
+        boardService.saveBoard(boardWriteRequestDTO, boardFileUploadDTO);
+        return "redirect:/board/list";
+    }
+
+    @GetMapping("/{id}")
+    public String getBoard(Model model, @PathVariable Long id) {
+        BoardResponseDTO result = boardService.getBoard(id);
+        model.addAttribute("board", result);
+        model.addAttribute("id", id);
+        return "/boardDetail";
     }
 
     @GetMapping("/updateForm/{id}")
@@ -34,17 +48,6 @@ public class BoardController {
         return "/boardList";
     }
 
-    @GetMapping("/{id}")
-    public String getBoard(Model model, @PathVariable Long id) {
-        model.addAttribute("board", boardService.getBoard(id));
-        return "/boardDetail";
-    }
-
-    @PostMapping("/write")
-    public String writeBoard(BoardWriteRequestDTO boardWriteRequestDTO, @ModelAttribute BoardFileUploadDTO boardFileUploadDTO) {
-        boardService.saveBoard(boardWriteRequestDTO, boardFileUploadDTO);
-        return "redirect:/board/list";
-    }
 
     @PutMapping("/update")
     public String updateBoard(@ModelAttribute Board board) {
