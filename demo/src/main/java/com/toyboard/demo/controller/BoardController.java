@@ -1,64 +1,69 @@
 package com.toyboard.demo.controller;
 
-import com.toyboard.demo.dto.BoardDto;
-import com.toyboard.demo.dto.BoardFileUploadDTO;
-import com.toyboard.demo.dto.BoardResponseDTO;
-import com.toyboard.demo.dto.BoardWriteRequestDTO;
+import com.toyboard.demo.dto.BoardDTO;
 import com.toyboard.demo.entity.Board;
 import com.toyboard.demo.service.BoardService;
+import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board")
 public class BoardController {
+    private static final Logger log = LoggerFactory.getLogger(BoardController.class);
     private final BoardService boardService;
 
     @GetMapping("/writeForm")
     public String writeForm() {
-        return "/writeForm";
+        return "/write";
     }
 
     @PostMapping("/write")
-    public String writeBoard(BoardWriteRequestDTO boardWriteRequestDTO, @ModelAttribute BoardFileUploadDTO boardFileUploadDTO) {
-        boardService.saveBoard(boardWriteRequestDTO, boardFileUploadDTO);
-        return "redirect:/board/list";
+    public String writeBoard(@ModelAttribute BoardDTO boardDTO) throws IOException {
+        System.out.println("boardDto = " + boardDTO);
+        boardService.saveBoard(boardDTO);
+        return "redirect:/board";
+    }
+
+    @GetMapping()
+    public String getBoardList(Model model) {
+        model.addAttribute("boardList", boardService.getBoardList());
+        return "/list";
     }
 
     @GetMapping("/{id}")
     public String getBoard(Model model, @PathVariable Long id) {
-        BoardResponseDTO result = boardService.getBoard(id);
-        model.addAttribute("board", result);
+        BoardDTO boardDTO = boardService.getBoard(id);
+        model.addAttribute("board", boardDTO);
         model.addAttribute("id", id);
-        return "/boardDetail";
+        return "/detail";
     }
 
     @GetMapping("/updateForm/{id}")
     public String updateForm(@PathVariable Long id, Model model) {
-        model.addAttribute("board", boardService.getBoard(id));
-        return "/updateForm";
+        BoardDTO boardDTO = boardService.getBoard(id);
+        model.addAttribute("boardUpdate", boardDTO);
+        return "/update";
     }
 
-    @GetMapping("/list")
-    public String getBoardList(Model model) {
-        model.addAttribute("boardList", boardService.getBoardList());
-        return "/boardList";
-    }
-
-
-    @PutMapping("/update")
-    public String updateBoard(@ModelAttribute Board board) {
-        System.out.println(board.getTitle());
-        boardService.updateBoard(board);
-        return "redirect:/board/list";
+    @PostMapping("/update")
+    public String updateBoard(@ModelAttribute BoardDTO boardDTO, Model model) {
+        BoardDTO board = boardService.updateBoard(boardDTO);
+        model.addAttribute("board", board);
+        return "redirect:/board";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteBoard(@PathVariable Long id) {
         boardService.deleteBoard(id);
-        return "redirect:/board/list";
+        return "redirect:/board";
     }
 }
