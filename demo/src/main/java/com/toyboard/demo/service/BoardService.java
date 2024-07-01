@@ -31,7 +31,7 @@ public class BoardService {
      * @param boardDTO
      */
     public void saveBoard(BoardDTO boardDTO) throws IOException {
-        if(boardDTO.getBoardFile().isEmpty()) {
+        if(boardDTO.getBoardFile().isEmpty() || boardDTO.getBoardFile().get(0).getOriginalFilename().equals("")) {
             Board board = Board.builder()
                     .title(boardDTO.getTitle())
                     .content(boardDTO.getContent())
@@ -73,46 +73,48 @@ public class BoardService {
      * 게시글 수정
      * @param boardDTO
      */
-    public BoardDTO updateBoard(BoardDTO boardDTO) {
-        Board board = boardRepository.findById(boardDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
-
-//        return BoardDTO.toBoardDTO(board);
-
-        if(board.getFileAttached() == 0) {
-            Board b = Board.toUpdateEntity(boardDTO);
-            boardRepository.save(b);
-            return getBoard(boardDTO.getId());
-        }else { //파일이 존재하는 게시글 -> 해당 게시글의 파일 불러옴
-            List<String> originalFileNameList = new ArrayList<>();
-            List<String> storedFileNameList = new ArrayList<>();
-
-            for(BoardFile boardFile : board.getBoardFileList()) {
-                originalFileNameList.add(boardFile.getOriginalFileName());
-                storedFileNameList.add(boardFile.getStoredFileName());
-            }
-
-            Board b = Board.builder()
+    public void updateBoard(BoardDTO boardDTO) throws IOException {
+        if(boardDTO.getBoardFile().isEmpty() || boardDTO.getBoardFile().get(0).getOriginalFilename().equals("")) {
+            Board board = Board.builder()
                     .id(boardDTO.getId())
-                    .title(boardDTO.getTitle())//제목 수정 반영
-                    .content(boardDTO.getContent())//내용 수정 반영
-                    .fileAttached(board.getFileAttached())
-                    .build();
+                    .title(boardDTO.getTitle())
+                    .content(boardDTO.getContent())
+                    .fileAttached(0).build();
 
-            //수정이 반영된 게시글 DB에 저장
-            boardRepository.save(b);
+            boardRepository.save(board);
+        }else {
 
-            return   BoardDTO.builder()
-                    .id(b.getId())
-                    .title(b.getTitle())
-                    .content(b.getContent())
-                    .createdAt(b.getCreatedAt())
-                    .fileAttached(b.getFileAttached())
-                    .originalFileName(originalFileNameList)
-                    .storedFileName(storedFileNameList)
-                    .build();
+            boardRepository.deleteById(boardDTO.getId());
 
+            Board board = Board.builder()
+                    .id(boardDTO.getId())
+                    .title(boardDTO.getTitle())
+                    .content(boardDTO.getContent())
+                    .fileAttached(1).build();
+
+            Long savedId = boardRepository.save(board).getId();
+            Board b = boardRepository.findById(savedId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+            for(MultipartFile boardFile : boardDTO.getBoardFile()) {
+                String originalFileName = boardFile.getOriginalFilename();
+                String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
+                String savePath = "C:\\toyboard_file\\" + storedFileName;
+                log.info("savePath =>  " +savePath);
+
+
+                boardFile.transferTo(new File(savePath));
+
+                BoardFile bf = BoardFile.builder()
+                        .originalFileName(originalFileName)
+                        .storedFileName(storedFileName)
+                        .board(b).build();
+
+                boardFileRepository.save(bf);
+            }
         }
+
+
 
     }
 

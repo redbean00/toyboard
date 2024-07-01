@@ -28,7 +28,6 @@ public class BoardController {
 
     @PostMapping("/write")
     public String writeBoard(@ModelAttribute BoardDTO boardDTO) throws IOException {
-        System.out.println("boardDto = " + boardDTO);
         boardService.saveBoard(boardDTO);
         return "redirect:/board";
     }
@@ -55,9 +54,9 @@ public class BoardController {
     }
 
     @PostMapping("/update")
-    public String updateBoard(@ModelAttribute BoardDTO boardDTO, Model model) {
-        BoardDTO board = boardService.updateBoard(boardDTO);
-        model.addAttribute("board", board);
+    public String updateBoard(@ModelAttribute BoardDTO boardDTO) throws IOException {
+        boardService.updateBoard(boardDTO);
+//        model.addAttribute("board", board);
         return "redirect:/board";
     }
 

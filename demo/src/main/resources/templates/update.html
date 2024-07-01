@@ -14,9 +14,8 @@
 <body>
 <div class="card mb-4">
     <div class="card-body">
-        <form th:action="@{/board/update}" th:method="post">
+        <form th:action="@{/board/update}" th:method="post" enctype="multipart/form-data">
             <div class="mb-3">
-<!--                <label for="id" class="form-label">번호</label>-->
                 <input type="hidden" class="form-control" id="id" name="id" th:value="${boardUpdate.id}">
             </div>
             <div class="mb-3">
@@ -29,12 +28,17 @@
                 <textarea class="form-control" id="content" name="content" th:text="${boardUpdate.content}"></textarea>
             </div>
 
-<!--            <div class="mb-3" th:if="${boardUpdate.fileAttached == 1}">-->
-<!--                <label class="form-label">파일</label>-->
-<!--                <td th:each="fileName : ${boardUpdate.storedFileName}">-->
-<!--                    <img th:src="@{|/upload/${fileName}|}" alt="" height="300" width="300">-->
-<!--                </td>-->
-<!--            </div>-->
+            <div class="form-floating mb-3">
+                <input type="file" name="boardFile" class="form-control" id="boardFile" multiple>
+                <label for="boardFile">파일 업로드</label>
+            </div>
+
+            <div class="mb-3" th:if="${boardUpdate.fileAttached == 1}">
+                <label class="form-label">파일</label>
+                <td th:each="fileName : ${boardUpdate.storedFileName}">
+                    <img th:src="@{|/upload/${fileName}|}" alt="" height="300" width="300">
+                </td>
+            </div>
 
             <div class="mb-3">
                 <label for="createdAt" class="form-label">작성일</label> <input
