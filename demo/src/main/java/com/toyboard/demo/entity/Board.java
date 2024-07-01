@@ -29,19 +29,10 @@ public class Board extends BaseTimeEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<BoardFile> boardFileList;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column
     private int fileAttached;
-
-    public void update(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
-
-    public static Board toUpdateEntity(BoardDTO boardDTO) {
-        return Board.builder()
-                .id(boardDTO.getId())
-                .title(boardDTO.getTitle())
-                .content(boardDTO.getContent())
-                .build();
-    }
 }
